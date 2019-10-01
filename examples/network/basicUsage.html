@@ -25,11 +25,12 @@
 <script type="text/javascript">
   // create an array with nodes
   var nodes = new vis.DataSet([
-    {id: 1, label: 'Node 1'},
+    {id: 1, label: 'Node 1', shape: 'groupBox', width: 400, height: 200},
     {id: 2, label: 'Node 2'},
     {id: 3, label: 'Node 3'},
     {id: 4, label: 'Node 4'},
-    {id: 5, label: 'Node 5'}
+    {id: 5, label: 'Node 5'},
+    {id: 6, label: 'Node 6', shape: 'box', width: 200, height: 200},
   ]);
 
   // create an array with edges
@@ -47,8 +48,29 @@
     nodes: nodes,
     edges: edges
   };
-  var options = {};
+  var options = {physics: false};
   var network = new vis.Network(container, data, options);
+
+  var click_counter = 100
+  network.on('click', function(params) {
+    if (nodes.length > 0) {
+      var targetNodeId = params.nodes[0]
+      var targetNode = nodes.get(targetNodeId)
+      if (targetNode.shape != 'groupBox')
+        return
+
+      var pos = network.getPositions(targetNodeId)[targetNodeId]
+      debugger
+      var newId = click_counter + 1
+      var r = 10
+      nodes.add({id: (click_counter++), x: pos['x'] - r, y: pos['y'] - r})
+      nodes.add({id: (click_counter++), x: pos['x'] + r, y: pos['y'] - r})
+      nodes.add({id: (click_counter++), x: pos['x'] - r, y: pos['y'] + r})
+      nodes.add({id: (click_counter++), x: pos['x'] + r, y: pos['y'] + r})
+      nodes.update()
+    }
+    console.log('clicked: ' + click_counter++)
+  })
 </script>
 
 
