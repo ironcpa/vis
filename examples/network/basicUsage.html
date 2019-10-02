@@ -52,6 +52,23 @@
   var network = new vis.Network(container, data, options);
 
   var click_counter = 100
+  // prepare handle nodes
+  var handleSize = 4;
+  var handleNodes = [];
+  var handleIDs = {
+    tl: 999, 
+    tr: 998, 
+    br: 997, 
+    bl: 996,
+  }
+  handleNodes.push({id: handleIDs.tl, shape: 'square', size: handleSize, x: 0, y: 0})
+  handleNodes.push({id: handleIDs.tr, shape: 'square', size: handleSize, x: 0, y: 0})
+  handleNodes.push({id: handleIDs.br, shape: 'square', size: handleSize, x: 0, y: 0})
+  handleNodes.push({id: handleIDs.bl, shape: 'square', size: handleSize, x: 0, y: 0})
+  nodes.update(handleNodes)
+
+  var resizeTarget
+
   network.on('click', function(params) {
     if (nodes.length > 0) {
       var targetNodeId = params.nodes[0]
@@ -59,16 +76,51 @@
       if (targetNode.shape != 'groupBox')
         return
 
+      resizeTarget = targetNode
+
       var pos = network.getPositions(targetNodeId)[targetNodeId]
       var newId = click_counter + 1
-      var r = 10
-      nodes.add({id: (click_counter++), x: pos['x'] - r, y: pos['y'] - r})
-      nodes.add({id: (click_counter++), x: pos['x'] + r, y: pos['y'] - r})
-      nodes.add({id: (click_counter++), x: pos['x'] - r, y: pos['y'] + r})
-      nodes.add({id: (click_counter++), x: pos['x'] + r, y: pos['y'] + r})
-      nodes.update()
+      var handleOffsetX = targetNode.width / 2 + handleSize / 2; 
+      var handleOffsetY = targetNode.height / 2 + handleSize / 2; 
+
+      // var newNodes = [];
+      // newNodes.push({id: (click_counter++), shape: 'square', size: r, x: pos['x'] - handleOffsetX, y: pos['y'] - handleOffsetY})
+      // newNodes.push({id: (click_counter++), shape: 'square', size: r, x: pos['x'] + handleOffsetX, y: pos['y'] - handleOffsetY})
+      // newNodes.push({id: (click_counter++), shape: 'square', size: r, x: pos['x'] - handleOffsetX, y: pos['y'] + handleOffsetY})
+      // newNodes.push({id: (click_counter++), shape: 'square', size: r, x: pos['x'] + handleOffsetX, y: pos['y'] + handleOffsetY})
+      // nodes.update(newNodes)
+      handleNodes[0].x = pos['x'] - handleOffsetX
+      handleNodes[0].y = pos['y'] - handleOffsetY
+      handleNodes[1].x = pos['x'] + handleOffsetX
+      handleNodes[1].y = pos['y'] - handleOffsetY
+      handleNodes[2].x = pos['x'] - handleOffsetX
+      handleNodes[2].y = pos['y'] + handleOffsetY
+      handleNodes[3].x = pos['x'] + handleOffsetX
+      handleNodes[3].y = pos['y'] + handleOffsetY
+      nodes.update(handleNodes)
     }
     console.log('clicked: ' + click_counter++)
+  })
+  network.on('dragStart', function(params) {
+    console.log('dragStart', params)
+  })
+  network.on('dragging', function(params) {
+    if (resizeTarget) {
+      console.log('dragging', params)
+      console.log('\ttarget=', resizeTarget)
+      console.log('\tdx='+params.event.deltaX)
+      resizeTarget.width += params.event.deltaX;
+      resizeTarget.heigh += params.event.deltaY;
+      nodes.update([resizeTarget]);
+    }
+  })
+  network.on('dragEnd', function(params) {
+    console.log('dragEnd', params)
+    if (resizeTarget) {
+      resizeTarget.width += params.event.deltaX;
+      resizeTarget.heigh += params.event.deltaY;
+      nodes.update(resizeTarget);
+    }
   })
 </script>
 
