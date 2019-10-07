@@ -4,6 +4,7 @@
   <title>Network | Basic usage</title>
 
   <script type="text/javascript" src="../../dist/vis.js"></script>
+  <!-- <script type="text/javascript" src="../../dist/vis-network.min.js"></script> -->
   <link href="../../dist/vis-network.min.css" rel="stylesheet" type="text/css" />
 
   <style type="text/css">
@@ -25,7 +26,8 @@
 <script type="text/javascript">
   // create an array with nodes
   var nodes = new vis.DataSet([
-    {id: 1, label: 'Group 1', shape: 'groupBox', width: 400, height: 200, clickToUse: false},
+    // {id: 1, label: 'Group 1', shape: 'groupBox', width: 400, height: 200, clickToUse: false},
+    {id: '999', label: 'Group 1', shape: 'groupBox', width: 400, height: 200},
     {id: 2, label: 'Node 2'},
     {id: 3, label: 'Node 3'},
     {id: 4, label: 'Node 4'},
@@ -49,6 +51,37 @@
     edges: edges
   };
   var options = {physics: false};
+  // var options = {      // porta setting
+  //   edges: {
+  //     font: {
+  //       color: "#000000",
+  //       strokeWidth: 1
+  //     }
+  //   },
+  //   nodes: {
+  //     borderWidth: 2,
+  //     color: {
+  //       background: "#00000020",
+  //       border: "#0000000",
+  //       highlight: {
+  //         background: "#000000",
+  //         border: "#ff0000"
+  //       }
+  //     },
+  //     font: {
+  //       color: "#000000",
+  //       strokeWidth: 0
+  //     },
+  //     shapeProperties: {
+  //       interpolation: true,
+  //       useBorderWithImage: true
+  //     }
+  //   },
+  //   physics: {
+  //     enabled: false,
+  //     minVelocity: 0.75
+  //   }
+  // }
   var network = new vis.Network(container, data, options);
 </script>
 
